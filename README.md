@@ -50,6 +50,4 @@ train_u6lujuX_CVtuZ9i.csv: Training dataset.
 
 
 
-Xuanci Yang
-
-UCSD MSDS Applicant
+Xuanci(Charley) Yang
