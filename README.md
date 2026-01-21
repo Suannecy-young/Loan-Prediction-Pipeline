@@ -5,86 +5,121 @@
 ![Status](https://img.shields.io/badge/Status-Completed-success)
 ![Focus](https://img.shields.io/badge/Focus-Ethical%20AI-red)
 
-## 📖 Project Overview
+# 📖 Project Overview
 
-This project engineers an end-to-end machine learning pipeline to predict loan eligibility. Unlike standard classification tasks, the core focus of this repository is on **Ethical AI** and **Statistical Robustness**.
+This project builds an end-to-end machine learning pipeline to predict loan eligibility.  
+Beyond prediction accuracy, the main goal is to **evaluate fairness and statistical reliability**.
 
-I audited the model for algorithmic bias using an **"Equal Opportunity"** framework (TPR Parity) and conducted **stability stress tests** to expose the risks of evaluating fairness on small, sparse datasets.
-
----
-
-## 🚀 Key Features
-
-* **End-to-End Pipeline**: From raw data cleaning (KNN imputation, log transformation) to model deployment.
-* **Advanced Data Handling**: Implemented **KNN Imputer** for preserving data structure and **SMOTE** to address class imbalance.
-* **Fairness Audit Module**: Developed a custom module to calculate True Positive Rate (TPR) parity across gender and marital status.
-* **Stability Analysis**: Conducted random-seed stress tests, revealing that an initial "100% fairness" metric was a statistical mirage driven by data sparsity ($n=9$).
+Instead of stopping at model performance, I audited the model for **algorithmic bias** using an **Equal Opportunity (TPR parity)** framework and conducted **stability stress tests**.  
+These tests revealed how fairness metrics can become misleading when evaluated on **small and sparse datasets**.
 
 ---
 
-## 🛠️ Data Wrangling & Feature Engineering
+# 🚀 Key Features
 
-### 1. Advanced Missing Value Imputation
-Instead of simple mean/median filling, I employed a hybrid strategy to maximize data integrity.
-* **Numeric Columns**: Used **KNNImputer** ($k=5$). This fills missing values based on the similarity of other features, preserving multivariate correlations better than mean imputation.
-* **Categorical Columns**: Used Mode (Most Frequent) imputation.
+- **End-to-End Pipeline**  
+  Covered the full workflow from raw data cleaning to model training and evaluation.
 
-### 2. Handling Skewness (EDA Driven)
-Through Exploratory Data Analysis, I identified that `ApplicantIncome` and `LoanAmount` were highly right-skewed.
-* **Action:** Applied **Log Transformation** to normalize distributions.
-* **Result:** Reduced the impact of extreme outliers and improved model convergence.
+- **Advanced Data Handling**  
+  - Used **KNN Imputation** to preserve relationships between features  
+  - Applied **SMOTE** to address severe class imbalance
 
----
+- **Fairness Audit Module**  
+  Built a custom module to calculate **True Positive Rate (TPR) parity** across:
+  - Gender  
+  - Marital Status
 
-## 📊 Exploratory Data Analysis (EDA)
-Before modeling, extensive EDA was conducted to understand feature relationships:
-
-* **Univariate Analysis:**
-    * Visualized distributions using histograms and boxplots.
-    * Detected significant outliers in `ApplicantIncome`, necessitating the log transformation mentioned above.
-* **Bivariate Analysis:**
-    * **Credit History is King:** Applicants with a Credit History of `1.0` showed an approval rate **~80%**, vs. **~7%** for those without.
-    * **Income Paradox:** Surprisingly, high income alone did not guarantee approval; the **Loan Amount to Income ratio** played a more critical role.
-* **Correlation Matrix:** Used Seaborn heatmaps to check for multicollinearity (e.g., `LoanAmount` correlates strongly with `ApplicantIncome`).
+- **Stability Analysis**  
+  Ran random-seed stress tests and found that an apparent “perfect fairness” score was unstable and driven by limited sample size.
 
 ---
 
-## ⚙️ Model Optimization
+# 🛠️ Data Wrangling & Feature Engineering
 
-* **Handling Imbalance:** Applied **SMOTE** (Synthetic Minority Over-sampling Technique) to ensure the model doesn't bias towards the majority class ("Loan Approved").
-* **Hyperparameter Tuning:** Utilized `GridSearchCV` to optimize parameters for:
-    * Decision Trees (`max_depth`)
-    * Random Forests (`n_estimators`)
-    * Gradient Boosting Machines (GBM)
+## 1. Missing Value Imputation
 
-**Best Model Performance:**
-> **Decision Tree Classifier** ($max\_depth=5$)
-> * **Accuracy:** ~72%
-> * **Focus:** Prioritized interpretability and generalization over overfitting.
+Rather than using simple mean or median filling, I applied a mixed strategy to maintain data quality.
 
----
+- **Numeric Features**  
+  - Used **KNNImputer (k = 5)**  
+  - Missing values were filled based on similar samples  
+  - This approach preserves multivariate relationships better than average-based methods
 
-## ⚖️ Fairness Audit: The "Illusion of Equity"
-This is the critical differentiator of this project. I tested the model for **Equal Opportunity** (True Positive Rate Parity) across Genders.
-
-| Metric | Observation |
-| :--- | :--- |
-| **Initial Audit** | Showed a **100% approval rate** (TPR) for qualified female applicants. |
-| **Stress Test** | Random seed variation caused this metric to fluctuate wildly between **50% and 100%**. |
-| **Conclusion** | The "Fairness" was a statistical mirage driven by **data sparsity** ($n=9$ qualified females in test set). |
-
-**Takeaway:** Technical fairness metrics must be backed by rigorous statistical power analysis.
+- **Categorical Features**  
+  - Used **Mode (Most Frequent) imputation**
 
 ---
 
-## 💻 Tech Stack
-* **Language:** Python 3.8+
-* **Libraries:**
-    * `Pandas`, `NumPy` (Data Manipulation)
-    * `Scikit-learn` (Modeling, KNN Imputer, GridSearch)
-    * `Imbalanced-learn` (SMOTE)
-    * `Matplotlib`, `Seaborn` (Visualization)
- 
+## 2. Handling Skewed Distributions
+
+Exploratory analysis showed that **ApplicantIncome** and **LoanAmount** were heavily right-skewed.
+
+- **Action:** Applied **log transformation**
+- **Result:**  
+  - Reduced the influence of extreme outliers  
+  - Improved model stability and convergence
+
+---
+
+# 📊 Exploratory Data Analysis (EDA)
+
+Before modeling, I performed detailed EDA to understand the data.
+
+## Univariate Analysis
+- Used histograms and boxplots to examine feature distributions
+- Detected strong outliers in **ApplicantIncome**, motivating log transformation
+
+## Bivariate Analysis
+- **Credit History is critical**  
+  - Approval rate ≈ **80%** when `Credit_History = 1.0`  
+  - Approval rate ≈ **7%** when `Credit_History = 0.0`
+- **Income paradox**  
+  - High income alone did not guarantee approval  
+  - The **Loan Amount-to-Income ratio** mattered more
+
+## Correlation Analysis
+- Used correlation matrices to check multicollinearity
+- Found strong correlation between **LoanAmount** and **ApplicantIncome**
+
+---
+
+# ⚙️ Model Training & Optimization
+
+## Handling Class Imbalance
+- Applied **SMOTE (Synthetic Minority Over-sampling Technique)**  
+- Prevented the model from favoring the majority class (“Loan Approved”)
+
+## Hyperparameter Tuning
+Used **GridSearchCV** to optimize:
+- Decision Tree (`max_depth`)
+- Random Forest (`n_estimators`)
+- Gradient Boosting Machine (GBM)
+
+## Best Model
+- **Decision Tree Classifier (max_depth = 5)**
+- **Accuracy:** ~72%
+- **Design choice:**  
+  Prioritized **interpretability and generalization** over aggressive optimization
+
+---
+
+# ⚖️ Fairness Audit: The “Illusion of Equity”
+
+This section is the core contribution of the project.
+
+I evaluated **Equal Opportunity (TPR parity)** across gender groups.
+
+| Stage | Observation |
+|------|-------------|
+| Initial Audit | Female applicants showed **100% TPR**, suggesting perfect fairness |
+| Stress Test | Changing random seeds caused TPR to fluctuate between **50% and 100%** |
+| Root Cause | Only **9 qualified female samples** existed in the test set |
+| Conclusion | The fairness result was **statistically unreliable** |
+
+### Key Takeaway
+> Fairness metrics can be misleading if they are not supported by sufficient sample size and stability testing.  
+> Ethical AI evaluation must include **statistical robustness checks**, not just surface-level metrics.
+
 ---
 
 ## 📂 Project Structure
@@ -97,6 +132,6 @@ test_Y3wMUE5_7gLdaTN.csv: Test dataset used for generating predictions.
 
 train_u6lujuX_CVtuZ9i.csv: Training dataset.
 
-
+---
 
 Xuanci(Charley) Yang
