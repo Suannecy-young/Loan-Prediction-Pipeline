@@ -84,8 +84,10 @@ This is the critical differentiator of this project. I tested the model for **Eq
     * `Scikit-learn` (Modeling, KNN Imputer, GridSearch)
     * `Imbalanced-learn` (SMOTE)
     * `Matplotlib`, `Seaborn` (Visualization)
+ 
+---
 
-**Project Structure**
+## 📂 Project Structure
 
 index.html: [RECOMMENDED] Full interactive report with code, visualizations, and analysis.
 
